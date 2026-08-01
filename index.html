@@ -93,31 +93,32 @@
     color: #5a4a40;
   }
 
-  /* Soap variety list */
+  /* Soap variety list - bigger */
   .soap-list {
     display: none;
-    max-width: 550px;
+    max-width: 750px;
+    width: 90%;
     margin: 50px auto 0;
     text-align: left;
     background: white;
-    border-radius: 16px;
-    padding: 25px 30px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    border-radius: 20px;
+    padding: 40px 45px;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.1);
   }
   .soap-list h2 {
     text-align: center;
-    font-size: 24px;
+    font-size: 30px;
     color: #4a3b32;
-    margin-bottom: 20px;
+    margin-bottom: 30px;
   }
   .soap-row {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 14px 0;
+    padding: 22px 0;
     border-bottom: 1px solid #eee;
     flex-wrap: wrap;
-    gap: 12px;
+    gap: 16px;
   }
   .soap-row:last-child {
     border-bottom: none;
@@ -125,39 +126,39 @@
   .soap-info {
     display: flex;
     align-items: center;
-    gap: 14px;
-    flex: 1 1 220px;
+    gap: 20px;
+    flex: 1 1 260px;
   }
   .soap-logo {
-    width: 46px;
-    height: 46px;
+    width: 64px;
+    height: 64px;
     border-radius: 50%;
     flex-shrink: 0;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 20px;
-    box-shadow: inset 0 0 8px rgba(0,0,0,0.15), 0 2px 5px rgba(0,0,0,0.1);
+    font-size: 28px;
+    box-shadow: inset 0 0 10px rgba(0,0,0,0.15), 0 3px 6px rgba(0,0,0,0.1);
   }
   .soap-name {
-    font-size: 16px;
+    font-size: 19px;
     font-weight: 500;
     color: #4a3b32;
   }
   .soap-price {
-    font-size: 14px;
+    font-size: 15px;
     color: #8a7a70;
-    margin-top: 2px;
+    margin-top: 3px;
   }
   .soap-qty {
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 12px;
   }
   .soap-qty button {
-    width: 30px;
-    height: 30px;
-    font-size: 18px;
+    width: 36px;
+    height: 36px;
+    font-size: 20px;
     border: none;
     border-radius: 50%;
     background: #c98a5e;
@@ -165,19 +166,19 @@
     cursor: pointer;
   }
   .soap-qty span {
-    font-size: 16px;
+    font-size: 18px;
     font-weight: 600;
-    min-width: 20px;
+    min-width: 22px;
     text-align: center;
   }
   .soap-add-btn {
-    padding: 8px 18px;
-    font-size: 14px;
+    padding: 10px 22px;
+    font-size: 15px;
     font-weight: 600;
     background: #4a3b32;
     color: white;
     border: none;
-    border-radius: 20px;
+    border-radius: 22px;
     cursor: pointer;
   }
 
@@ -270,6 +271,28 @@
     font-size: 16px;
     padding: 10px 0;
   }
+  .order-btn {
+    display: block;
+    width: 100%;
+    margin-top: 25px;
+    padding: 14px;
+    font-size: 18px;
+    font-weight: 700;
+    background: #2e7d32;
+    color: white;
+    border: none;
+    border-radius: 30px;
+    cursor: pointer;
+    text-align: center;
+    text-decoration: none;
+  }
+  .order-btn:active {
+    transform: scale(0.98);
+  }
+  .order-btn.disabled {
+    background: #ccc;
+    pointer-events: none;
+  }
 </style>
 </head>
 <body>
@@ -312,6 +335,7 @@
     <div class="empty-cart">Your cart is empty</div>
   </div>
   <div class="cart-total" id="cartTotal"></div>
+  <a href="#" class="order-btn disabled" id="orderLink" onclick="return placeOrder()">Order Now (Pay via UPI)</a>
 </div>
 
 <script>
@@ -326,6 +350,7 @@ const soapVarieties = [
 
 const soapPrice = 100;
 const powderPrice = 200;
+const upiId = "shreetulasi@oksbi";
 
 let soapQty = {};
 soapVarieties.forEach(s => soapQty[s.id] = 1);
@@ -411,10 +436,12 @@ function removeFromCart(key) {
 function renderCart() {
   const cartItemsDiv = document.getElementById('cartItems');
   const cartTotalDiv = document.getElementById('cartTotal');
+  const orderLink = document.getElementById('orderLink');
 
   if (cart.length === 0) {
     cartItemsDiv.innerHTML = '<div class="empty-cart">Your cart is empty</div>';
     cartTotalDiv.innerText = '';
+    orderLink.classList.add('disabled');
     return;
   }
 
@@ -434,6 +461,18 @@ function renderCart() {
 
   cartItemsDiv.innerHTML = html;
   cartTotalDiv.innerText = "Total: ₹" + grandTotal;
+  orderLink.classList.remove('disabled');
+}
+
+function placeOrder() {
+  if (cart.length === 0) return false;
+
+  const grandTotal = cart.reduce((sum, c) => sum + c.unitPrice * c.qty, 0);
+  const note = cart.map(c => `${c.name} x${c.qty}`).join(', ');
+  const upiUrl = `upi://pay?pa=${upiId}&pn=Shree%20Tulasi&am=${grandTotal}&cu=INR&tn=${encodeURIComponent(note)}`;
+
+  window.location.href = upiUrl;
+  return false;
 }
 </script>
 
