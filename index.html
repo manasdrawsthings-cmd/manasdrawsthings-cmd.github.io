@@ -4,16 +4,29 @@
 <title>My Website</title>
 <style>
   body {
-    font-family: Arial, sans-serif;
+    font-family: 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
     text-align: center;
-    padding: 40px 20px;
+    padding: 60px 20px;
     background: #fdf6f0;
+    color: #333;
   }
-  h1 { color: #333; }
+  h1 {
+    font-size: 36px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    color: #4a3b32;
+    margin-bottom: 10px;
+  }
+  p.subtitle {
+    font-size: 16px;
+    color: #8a7a70;
+    margin-top: 0;
+    margin-bottom: 40px;
+  }
   .buttons {
     display: flex;
     justify-content: center;
-    gap: 40px;
+    gap: 60px;
     margin-top: 40px;
     flex-wrap: wrap;
   }
@@ -21,33 +34,45 @@
     cursor: pointer;
     border: none;
     background: none;
+    transition: transform 0.15s ease;
+  }
+  .item:active {
+    transform: scale(0.96);
   }
   .soap {
-    width: 80px;
-    height: 50px;
-    background: #f7a8c4;
-    border-radius: 12px;
-    box-shadow: inset 0 0 10px rgba(0,0,0,0.15);
+    width: 220px;
+    height: 140px;
+    background: linear-gradient(145deg, #f9b8d0, #f28cae);
+    border-radius: 24px;
+    box-shadow: 0 6px 14px rgba(230,120,160,0.35), inset 0 0 20px rgba(255,255,255,0.3);
   }
   .powder {
-    width: 80px;
-    height: 60px;
-    background: #f0e6d2;
+    width: 220px;
+    height: 170px;
+    background: linear-gradient(145deg, #f5ead2, #e8d7ae);
     border-radius: 50% 50% 45% 45%;
-    box-shadow: inset 0 -8px 10px rgba(200,180,140,0.6);
+    box-shadow: 0 6px 14px rgba(180,150,90,0.3), inset 0 -14px 20px rgba(200,180,140,0.5);
+  }
+  .item p {
+    margin-top: 14px;
+    font-size: 18px;
+    font-weight: 500;
+    color: #5a4a40;
   }
   .price {
-    margin-top: 15px;
-    font-size: 20px;
-    font-weight: bold;
-    color: #444;
-    min-height: 30px;
+    margin-top: 40px;
+    font-size: 32px;
+    font-weight: 700;
+    color: #2f2f2f;
+    min-height: 45px;
+    letter-spacing: 0.3px;
   }
 </style>
 </head>
 <body>
 
-<h1>Hello, my website is live!</h1>
+<h1>Natural Skincare, Made With Care</h1>
+<p class="subtitle">Handcrafted soaps and face powders for every skin type</p>
 
 <div class="buttons">
   <button class="item" onclick="showPrice('soap')">
@@ -66,12 +91,6 @@
 function showPrice(type) {
   const box = document.getElementById('priceBox');
   if (type === 'soap') {
-    box.innerText = "Any soap = ₹100";
+    box.innerText = "Any soap — ₹100";
   } else {
-    box.innerText = "100g = ₹200";
-  }
-}
-</script>
-
-</body>
-</html>
+    box.innerText = "100
