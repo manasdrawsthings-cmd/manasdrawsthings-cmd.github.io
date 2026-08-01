@@ -26,7 +26,7 @@
   .buttons {
     display: flex;
     justify-content: center;
-    gap: 70px;
+    gap: 60px;
     flex-wrap: wrap;
   }
   .item {
@@ -40,26 +40,29 @@
   }
   .item.selected .soap,
   .item.selected .powder {
-    outline: 3px solid #c98a5e;
-    outline-offset: 4px;
+    outline: 4px solid #c98a5e;
+    outline-offset: 5px;
   }
 
   .soap {
-    width: 260px;
-    height: 160px;
+    width: 380px;
+    max-width: 85vw;
+    height: 230px;
     background: linear-gradient(145deg, #f9b8d0, #f28cae);
-    border-radius: 28px;
-    box-shadow: 0 8px 16px rgba(230,120,160,0.35), inset 0 0 25px rgba(255,255,255,0.35);
+    border-radius: 34px;
+    box-shadow: 0 10px 20px rgba(230,120,160,0.35), inset 0 0 30px rgba(255,255,255,0.35);
   }
 
   .powder {
-    width: 260px;
-    height: 190px;
+    width: 380px;
+    max-width: 85vw;
+    height: 270px;
     position: relative;
-    background: radial-gradient(ellipse at center, #fbf3e2 0%, #e9d7ad 90%);
+    background: radial-gradient(ellipse at center, #ffffff 0%, #f0eee8 90%);
     border-radius: 50% 50% 45% 45%;
-    box-shadow: 0 8px 16px rgba(180,150,90,0.3);
+    box-shadow: 0 10px 20px rgba(150,150,150,0.25);
     overflow: hidden;
+    border: 1px solid #eee;
   }
   .powder::before {
     content: "";
@@ -68,7 +71,7 @@
     left: 10%;
     width: 80%;
     height: 40%;
-    background: radial-gradient(circle, rgba(255,255,255,0.6) 0%, rgba(255,255,255,0) 70%);
+    background: radial-gradient(circle, rgba(255,255,255,0.9) 0%, rgba(255,255,255,0) 70%);
     border-radius: 50%;
   }
   .powder::after {
@@ -77,15 +80,15 @@
     width: 100%;
     height: 100%;
     background-image:
-      radial-gradient(circle, rgba(255,255,255,0.5) 1px, transparent 1.5px),
-      radial-gradient(circle, rgba(180,150,100,0.25) 1px, transparent 1.5px);
+      radial-gradient(circle, rgba(200,200,200,0.4) 1.5px, transparent 2px),
+      radial-gradient(circle, rgba(230,230,230,0.5) 1.5px, transparent 2px);
     background-size: 14px 14px, 20px 20px;
     background-position: 0 0, 7px 10px;
   }
 
   .item p {
-    margin-top: 16px;
-    font-size: 19px;
+    margin-top: 18px;
+    font-size: 21px;
     font-weight: 500;
     color: #5a4a40;
   }
@@ -116,12 +119,66 @@
     font-weight: 600;
     min-width: 30px;
   }
-  .total {
+
+  .add-cart-btn {
     margin-top: 25px;
-    font-size: 30px;
+    padding: 12px 30px;
+    font-size: 18px;
+    font-weight: 600;
+    background: #4a3b32;
+    color: white;
+    border: none;
+    border-radius: 30px;
+    cursor: pointer;
+  }
+  .add-cart-btn:active {
+    transform: scale(0.97);
+  }
+
+  .cart-section {
+    margin-top: 70px;
+    max-width: 500px;
+    margin-left: auto;
+    margin-right: auto;
+    text-align: left;
+    background: white;
+    border-radius: 16px;
+    padding: 25px 30px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  }
+  .cart-section h2 {
+    font-size: 24px;
+    color: #4a3b32;
+    margin-bottom: 15px;
+    text-align: center;
+  }
+  .cart-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 0;
+    border-bottom: 1px solid #eee;
+    font-size: 17px;
+  }
+  .cart-item button {
+    background: none;
+    border: none;
+    color: #c0392b;
+    font-size: 16px;
+    cursor: pointer;
+  }
+  .cart-total {
+    text-align: right;
+    font-size: 22px;
     font-weight: 700;
+    margin-top: 15px;
     color: #2f2f2f;
-    min-height: 40px;
+  }
+  .empty-cart {
+    text-align: center;
+    color: #999;
+    font-size: 16px;
+    padding: 10px 0;
   }
 </style>
 </head>
@@ -137,7 +194,7 @@
   </button>
   <button class="item" id="powderBtn" onclick="selectProduct('powder')">
     <div class="powder"></div>
-    <p>Face Powder</p>
+    <p>Sunni Pindi</p>
   </button>
 </div>
 
@@ -148,22 +205,27 @@
     <span id="qtyDisplay">1</span>
     <button onclick="changeQty(1)">+</button>
   </div>
-  <div class="total" id="totalText"></div>
+  <br>
+  <button class="add-cart-btn" onclick="addToCart()">Add to Cart</button>
+</div>
+
+<div class="cart-section">
+  <h2>Your Cart</h2>
+  <div id="cartItems">
+    <div class="empty-cart">Your cart is empty</div>
+  </div>
+  <div class="cart-total" id="cartTotal"></div>
 </div>
 
 <script>
 let selected = null;
 let qty = 1;
+let cart = [];
 
-const prices = {
-  soap: 100,
-  powder: 200
-};
-
-const unitLabels = {
-  soap: "₹100 per soap",
-  powder: "₹200 per 100g"
-};
+const prices = { soap: 100, powder: 200 };
+const unitLabels = { soap: "₹100 per soap", powder: "₹200 per 100g" };
+const displayNames = { soap: "Soap", powder: "Sunni Pindi" };
+const unitSuffix = { soap: "pc(s)", powder: "x 100g" };
 
 function selectProduct(type) {
   selected = type;
@@ -176,21 +238,58 @@ function selectProduct(type) {
   document.getElementById('orderBox').style.display = 'block';
   document.getElementById('unitPriceText').innerText = unitLabels[type];
   document.getElementById('qtyDisplay').innerText = qty;
-  updateTotal();
 }
 
 function changeQty(delta) {
   if (!selected) return;
   qty = Math.max(1, qty + delta);
   document.getElementById('qtyDisplay').innerText = qty;
-  updateTotal();
 }
 
-function updateTotal() {
+function addToCart() {
   if (!selected) return;
-  const total = prices[selected] * qty;
-  const unitName = selected === 'soap' ? 'soap(s)' : 'x 100g';
-  document.getElementById('totalText').innerText = "Total: ₹" + total;
+
+  const existing = cart.find(c => c.type === selected);
+  if (existing) {
+    existing.qty += qty;
+  } else {
+    cart.push({ type: selected, qty: qty });
+  }
+
+  renderCart();
+}
+
+function removeFromCart(type) {
+  cart = cart.filter(c => c.type !== type);
+  renderCart();
+}
+
+function renderCart() {
+  const cartItemsDiv = document.getElementById('cartItems');
+  const cartTotalDiv = document.getElementById('cartTotal');
+
+  if (cart.length === 0) {
+    cartItemsDiv.innerHTML = '<div class="empty-cart">Your cart is empty</div>';
+    cartTotalDiv.innerText = '';
+    return;
+  }
+
+  let html = '';
+  let grandTotal = 0;
+
+  cart.forEach(c => {
+    const lineTotal = prices[c.type] * c.qty;
+    grandTotal += lineTotal;
+    html += `
+      <div class="cart-item">
+        <span>${displayNames[c.type]} — ${c.qty} ${unitSuffix[c.type]}</span>
+        <span>₹${lineTotal} <button onclick="removeFromCart('${c.type}')">✕</button></span>
+      </div>
+    `;
+  });
+
+  cartItemsDiv.innerHTML = html;
+  cartTotalDiv.innerText = "Total: ₹" + grandTotal;
 }
 </script>
 
