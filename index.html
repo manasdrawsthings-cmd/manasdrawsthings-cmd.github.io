@@ -93,10 +93,100 @@
     color: #5a4a40;
   }
 
+  /* Soap variety list */
+  .soap-list {
+    display: none;
+    max-width: 550px;
+    margin: 50px auto 0;
+    text-align: left;
+    background: white;
+    border-radius: 16px;
+    padding: 25px 30px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  }
+  .soap-list h2 {
+    text-align: center;
+    font-size: 24px;
+    color: #4a3b32;
+    margin-bottom: 20px;
+  }
+  .soap-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 14px 0;
+    border-bottom: 1px solid #eee;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  .soap-row:last-child {
+    border-bottom: none;
+  }
+  .soap-info {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    flex: 1 1 220px;
+  }
+  .soap-logo {
+    width: 46px;
+    height: 46px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    box-shadow: inset 0 0 8px rgba(0,0,0,0.15), 0 2px 5px rgba(0,0,0,0.1);
+  }
+  .soap-name {
+    font-size: 16px;
+    font-weight: 500;
+    color: #4a3b32;
+  }
+  .soap-price {
+    font-size: 14px;
+    color: #8a7a70;
+    margin-top: 2px;
+  }
+  .soap-qty {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .soap-qty button {
+    width: 30px;
+    height: 30px;
+    font-size: 18px;
+    border: none;
+    border-radius: 50%;
+    background: #c98a5e;
+    color: white;
+    cursor: pointer;
+  }
+  .soap-qty span {
+    font-size: 16px;
+    font-weight: 600;
+    min-width: 20px;
+    text-align: center;
+  }
+  .soap-add-btn {
+    padding: 8px 18px;
+    font-size: 14px;
+    font-weight: 600;
+    background: #4a3b32;
+    color: white;
+    border: none;
+    border-radius: 20px;
+    cursor: pointer;
+  }
+
+  /* Powder order box */
   .order-box {
     margin-top: 50px;
     font-size: 20px;
     color: #2f2f2f;
+    display: none;
   }
   .qty-controls {
     display: inline-flex;
@@ -188,25 +278,32 @@
 <p class="subtitle">Handcrafted soaps and face powders for every skin type</p>
 
 <div class="buttons">
-  <button class="item" id="soapBtn" onclick="selectProduct('soap')">
+  <button class="item" id="soapBtn" onclick="toggleSoapList()">
     <div class="soap"></div>
     <p>Soap</p>
   </button>
-  <button class="item" id="powderBtn" onclick="selectProduct('powder')">
+  <button class="item" id="powderBtn" onclick="selectPowder()">
     <div class="powder"></div>
     <p>Sunni Pindi</p>
   </button>
 </div>
 
-<div class="order-box" id="orderBox" style="display:none;">
-  <div id="unitPriceText"></div>
+<!-- Soap variety list -->
+<div class="soap-list" id="soapList">
+  <h2>Choose Your Soap</h2>
+  <div id="soapRows"></div>
+</div>
+
+<!-- Powder order box -->
+<div class="order-box" id="orderBox">
+  <div id="unitPriceText">₹200 per 100g</div>
   <div class="qty-controls">
     <button onclick="changeQty(-1)">−</button>
     <span id="qtyDisplay">1</span>
     <button onclick="changeQty(1)">+</button>
   </div>
   <br>
-  <button class="add-cart-btn" onclick="addToCart()">Add to Cart</button>
+  <button class="add-cart-btn" onclick="addPowderToCart()">Add to Cart</button>
 </div>
 
 <div class="cart-section">
@@ -218,49 +315,96 @@
 </div>
 
 <script>
-let selected = null;
-let qty = 1;
+const soapVarieties = [
+  { id: "papaya", name: "Papaya Moisturizer Soap", color: "#ffb26b", emoji: "🍈" },
+  { id: "detan", name: "Detan Moisturizer Soap", color: "#e0a672", emoji: "☀️" },
+  { id: "antipimple", name: "Anti Pimple Soap", color: "#8bc98d", emoji: "🌿" },
+  { id: "kupintaku", name: "Kupintaku Soap", color: "#6bbf9c", emoji: "🍃" },
+  { id: "mangista", name: "Mangista Moisturizer Soap", color: "#b98cd6", emoji: "🌸" },
+  { id: "antidarkspot", name: "Anti Dark Spots Moisturizer Soap", color: "#a97155", emoji: "✨" }
+];
+
+const soapPrice = 100;
+const powderPrice = 200;
+
+let soapQty = {};
+soapVarieties.forEach(s => soapQty[s.id] = 1);
+
+let powderQty = 1;
 let cart = [];
 
-const prices = { soap: 100, powder: 200 };
-const unitLabels = { soap: "₹100 per soap", powder: "₹200 per 100g" };
-const displayNames = { soap: "Soap", powder: "Sunni Pindi" };
-const unitSuffix = { soap: "pc(s)", powder: "x 100g" };
+// Build soap rows
+function buildSoapRows() {
+  const container = document.getElementById('soapRows');
+  container.innerHTML = soapVarieties.map(s => `
+    <div class="soap-row">
+      <div class="soap-info">
+        <div class="soap-logo" style="background:${s.color};">${s.emoji}</div>
+        <div>
+          <div class="soap-name">${s.name}</div>
+          <div class="soap-price">₹${soapPrice} per bar</div>
+        </div>
+      </div>
+      <div class="soap-qty">
+        <button onclick="changeSoapQty('${s.id}', -1)">−</button>
+        <span id="qty-${s.id}">1</span>
+        <button onclick="changeSoapQty('${s.id}', 1)">+</button>
+      </div>
+      <button class="soap-add-btn" onclick="addSoapToCart('${s.id}')">Add</button>
+    </div>
+  `).join('');
+}
+buildSoapRows();
 
-function selectProduct(type) {
-  selected = type;
-  qty = 1;
-
-  document.getElementById('soapBtn').classList.remove('selected');
-  document.getElementById('powderBtn').classList.remove('selected');
-  document.getElementById(type + 'Btn').classList.add('selected');
-
-  document.getElementById('orderBox').style.display = 'block';
-  document.getElementById('unitPriceText').innerText = unitLabels[type];
-  document.getElementById('qtyDisplay').innerText = qty;
+function toggleSoapList() {
+  const list = document.getElementById('soapList');
+  const isOpen = list.style.display === 'block';
+  list.style.display = isOpen ? 'none' : 'block';
+  document.getElementById('soapBtn').classList.toggle('selected', !isOpen);
 }
 
-function changeQty(delta) {
-  if (!selected) return;
-  qty = Math.max(1, qty + delta);
-  document.getElementById('qtyDisplay').innerText = qty;
+function changeSoapQty(id, delta) {
+  soapQty[id] = Math.max(1, soapQty[id] + delta);
+  document.getElementById('qty-' + id).innerText = soapQty[id];
 }
 
-function addToCart() {
-  if (!selected) return;
+function addSoapToCart(id) {
+  const soap = soapVarieties.find(s => s.id === id);
+  const qty = soapQty[id];
 
-  const existing = cart.find(c => c.type === selected);
+  const existing = cart.find(c => c.key === 'soap-' + id);
   if (existing) {
     existing.qty += qty;
   } else {
-    cart.push({ type: selected, qty: qty });
+    cart.push({ key: 'soap-' + id, name: soap.name, unitPrice: soapPrice, qty: qty, unitLabel: "bar(s)" });
   }
-
   renderCart();
 }
 
-function removeFromCart(type) {
-  cart = cart.filter(c => c.type !== type);
+function selectPowder() {
+  const box = document.getElementById('orderBox');
+  const isOpen = box.style.display === 'block';
+  box.style.display = isOpen ? 'none' : 'block';
+  document.getElementById('powderBtn').classList.toggle('selected', !isOpen);
+}
+
+function changeQty(delta) {
+  powderQty = Math.max(1, powderQty + delta);
+  document.getElementById('qtyDisplay').innerText = powderQty;
+}
+
+function addPowderToCart() {
+  const existing = cart.find(c => c.key === 'powder');
+  if (existing) {
+    existing.qty += powderQty;
+  } else {
+    cart.push({ key: 'powder', name: "Sunni Pindi", unitPrice: powderPrice, qty: powderQty, unitLabel: "x 100g" });
+  }
+  renderCart();
+}
+
+function removeFromCart(key) {
+  cart = cart.filter(c => c.key !== key);
   renderCart();
 }
 
@@ -278,12 +422,12 @@ function renderCart() {
   let grandTotal = 0;
 
   cart.forEach(c => {
-    const lineTotal = prices[c.type] * c.qty;
+    const lineTotal = c.unitPrice * c.qty;
     grandTotal += lineTotal;
     html += `
       <div class="cart-item">
-        <span>${displayNames[c.type]} — ${c.qty} ${unitSuffix[c.type]}</span>
-        <span>₹${lineTotal} <button onclick="removeFromCart('${c.type}')">✕</button></span>
+        <span>${c.name} — ${c.qty} ${c.unitLabel}</span>
+        <span>₹${lineTotal} <button onclick="removeFromCart('${c.key}')">✕</button></span>
       </div>
     `;
   });
