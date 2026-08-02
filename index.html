@@ -1,342 +1,316 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>My Website</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Shree Tulasi — Natural Skincare</title>
 <style>
+  * { box-sizing: border-box; }
   body {
     font-family: 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
-    text-align: center;
-    padding: 60px 20px;
+    margin: 0;
     background: #fdf6f0;
     color: #333;
   }
-  h1 {
-    font-size: 38px;
-    font-weight: 600;
+
+  /* Hero */
+  .hero {
+    background: linear-gradient(135deg, #f7c9d8 0%, #f2a8c2 50%, #e8927f 100%);
+    padding: 70px 20px 60px;
+    text-align: center;
+    color: white;
+    border-radius: 0 0 40px 40px;
+    box-shadow: 0 10px 25px rgba(230,120,160,0.25);
+  }
+  .hero h1 {
+    font-size: 42px;
+    font-weight: 700;
+    margin: 0 0 12px;
     letter-spacing: 0.5px;
-    color: #4a3b32;
-    margin-bottom: 10px;
+    text-shadow: 0 2px 8px rgba(0,0,0,0.15);
   }
-  p.subtitle {
+  .hero p {
     font-size: 17px;
-    color: #8a7a70;
-    margin-top: 0;
-    margin-bottom: 50px;
+    opacity: 0.95;
+    max-width: 500px;
+    margin: 0 auto;
   }
-  .buttons {
-    display: flex;
-    justify-content: center;
-    gap: 60px;
-    flex-wrap: wrap;
+
+  .container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 50px 20px;
   }
-  .item {
+
+  h2.section-title {
+    text-align: center;
+    font-size: 28px;
+    color: #4a3b32;
+    margin-bottom: 35px;
+    font-weight: 600;
+  }
+
+  /* Product cards */
+  .product-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 28px;
+    margin-bottom: 60px;
+  }
+  .product-card {
+    background: white;
+    border-radius: 22px;
+    padding: 28px;
+    text-align: center;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.06);
     cursor: pointer;
-    border: none;
-    background: none;
-    transition: transform 0.15s ease;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
   }
-  .item:active {
-    transform: scale(0.96);
+  .product-card:hover, .product-card:active {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 28px rgba(0,0,0,0.1);
   }
-  .item.selected .soap,
-  .item.selected .powder {
-    outline: 4px solid #c98a5e;
-    outline-offset: 5px;
+  .product-card.selected {
+    outline: 3px solid #c98a5e;
   }
 
-  .soap {
-    width: 380px;
-    max-width: 85vw;
-    height: 230px;
+  .soap-visual {
+    width: 100%;
+    height: 150px;
     background: linear-gradient(145deg, #f9b8d0, #f28cae);
-    border-radius: 34px;
-    box-shadow: 0 10px 20px rgba(230,120,160,0.35), inset 0 0 30px rgba(255,255,255,0.35);
+    border-radius: 20px;
+    box-shadow: inset 0 0 25px rgba(255,255,255,0.4);
+    margin-bottom: 16px;
   }
-
-  .powder {
-    width: 380px;
-    max-width: 85vw;
-    height: 270px;
+  .powder-visual {
+    width: 100%;
+    height: 150px;
     position: relative;
     background: radial-gradient(ellipse at center, #ffffff 0%, #f0eee8 90%);
     border-radius: 50% 50% 45% 45%;
-    box-shadow: 0 10px 20px rgba(150,150,150,0.25);
+    box-shadow: 0 6px 14px rgba(150,150,150,0.2);
     overflow: hidden;
     border: 1px solid #eee;
+    margin-bottom: 16px;
   }
-  .powder::before {
+  .powder-visual::after {
     content: "";
     position: absolute;
-    top: 15%;
-    left: 10%;
-    width: 80%;
-    height: 40%;
-    background: radial-gradient(circle, rgba(255,255,255,0.9) 0%, rgba(255,255,255,0) 70%);
-    border-radius: 50%;
-  }
-  .powder::after {
-    content: "";
-    position: absolute;
-    width: 100%;
-    height: 100%;
+    width: 100%; height: 100%;
     background-image:
       radial-gradient(circle, rgba(200,200,200,0.4) 1.5px, transparent 2px),
       radial-gradient(circle, rgba(230,230,230,0.5) 1.5px, transparent 2px);
     background-size: 14px 14px, 20px 20px;
-    background-position: 0 0, 7px 10px;
   }
 
-  .item p {
-    margin-top: 18px;
-    font-size: 21px;
-    font-weight: 500;
-    color: #5a4a40;
+  .product-card h3 {
+    font-size: 20px;
+    color: #4a3b32;
+    margin: 0 0 6px;
+  }
+  .product-card .price-tag {
+    font-size: 15px;
+    color: #8a7a70;
   }
 
-  /* Soap variety list - bigger */
+  /* Soap variety list */
   .soap-list {
     display: none;
-    max-width: 750px;
-    width: 90%;
-    margin: 50px auto 0;
-    text-align: left;
     background: white;
-    border-radius: 20px;
-    padding: 40px 45px;
-    box-shadow: 0 6px 18px rgba(0,0,0,0.1);
+    border-radius: 22px;
+    padding: 35px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+    margin-bottom: 50px;
   }
   .soap-list h2 {
     text-align: center;
-    font-size: 30px;
+    font-size: 26px;
     color: #4a3b32;
-    margin-bottom: 30px;
+    margin-bottom: 25px;
   }
   .soap-row {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 22px 0;
-    border-bottom: 1px solid #eee;
+    padding: 20px 0;
+    border-bottom: 1px solid #f0eae4;
     flex-wrap: wrap;
     gap: 16px;
   }
-  .soap-row:last-child {
-    border-bottom: none;
-  }
-  .soap-info {
-    display: flex;
-    align-items: center;
-    gap: 20px;
-    flex: 1 1 260px;
-  }
+  .soap-row:last-child { border-bottom: none; }
+  .soap-info { display: flex; align-items: center; gap: 18px; flex: 1 1 240px; }
   .soap-logo {
-    width: 64px;
-    height: 64px;
+    width: 58px; height: 58px;
     border-radius: 50%;
-    flex-shrink: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 28px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 26px;
     box-shadow: inset 0 0 10px rgba(0,0,0,0.15), 0 3px 6px rgba(0,0,0,0.1);
+    flex-shrink: 0;
   }
-  .soap-name {
-    font-size: 19px;
-    font-weight: 500;
-    color: #4a3b32;
-  }
-  .soap-price {
-    font-size: 15px;
-    color: #8a7a70;
-    margin-top: 3px;
-  }
-  .soap-qty {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-  }
+  .soap-name { font-size: 18px; font-weight: 500; color: #4a3b32; }
+  .soap-price { font-size: 14px; color: #8a7a70; margin-top: 2px; }
+  .soap-qty { display: flex; align-items: center; gap: 12px; }
   .soap-qty button {
-    width: 36px;
-    height: 36px;
-    font-size: 20px;
-    border: none;
-    border-radius: 50%;
-    background: #c98a5e;
-    color: white;
-    cursor: pointer;
+    width: 34px; height: 34px; font-size: 19px;
+    border: none; border-radius: 50%;
+    background: #c98a5e; color: white; cursor: pointer;
   }
-  .soap-qty span {
-    font-size: 18px;
-    font-weight: 600;
-    min-width: 22px;
-    text-align: center;
-  }
+  .soap-qty span { font-size: 17px; font-weight: 600; min-width: 22px; text-align: center; }
   .soap-add-btn {
-    padding: 10px 22px;
-    font-size: 15px;
-    font-weight: 600;
-    background: #4a3b32;
-    color: white;
-    border: none;
-    border-radius: 22px;
-    cursor: pointer;
+    padding: 10px 20px; font-size: 14px; font-weight: 600;
+    background: #4a3b32; color: white; border: none;
+    border-radius: 22px; cursor: pointer;
   }
 
-  /* Powder order box */
+  /* Powder box */
   .order-box {
-    margin-top: 50px;
-    font-size: 20px;
-    color: #2f2f2f;
     display: none;
+    background: white;
+    border-radius: 22px;
+    padding: 35px;
+    text-align: center;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+    margin-bottom: 50px;
   }
   .qty-controls {
-    display: inline-flex;
-    align-items: center;
-    gap: 15px;
-    margin-top: 15px;
+    display: inline-flex; align-items: center; gap: 18px; margin-top: 15px;
   }
   .qty-controls button {
-    width: 40px;
-    height: 40px;
-    font-size: 22px;
-    border: none;
-    border-radius: 50%;
+    width: 42px; height: 42px; font-size: 22px;
+    border: none; border-radius: 50%;
+    background: #c98a5e; color: white; cursor: pointer;
+  }
+  .qty-controls span { font-size: 22px; font-weight: 600; min-width: 30px; }
+  .add-cart-btn {
+    margin-top: 25px; padding: 13px 32px; font-size: 17px; font-weight: 600;
+    background: #4a3b32; color: white; border: none;
+    border-radius: 30px; cursor: pointer;
+  }
+
+  /* Cart */
+  .cart-section {
+    background: white;
+    border-radius: 22px;
+    padding: 35px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+  }
+  .cart-section h2 { text-align: center; font-size: 26px; color: #4a3b32; margin-bottom: 20px; }
+  .cart-item {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 12px 0; border-bottom: 1px solid #f0eae4; font-size: 16px;
+  }
+  .cart-item button { background: none; border: none; color: #c0392b; font-size: 15px; cursor: pointer; }
+  .empty-cart { text-align: center; color: #aaa; font-size: 16px; padding: 20px 0; }
+
+  /* Discount */
+  .discount-row {
+    display: flex; gap: 10px; margin-top: 20px; flex-wrap: wrap;
+  }
+  .discount-row input {
+    flex: 1 1 160px;
+    padding: 12px 16px;
+    border: 1px solid #e0d5cb;
+    border-radius: 14px;
+    font-size: 15px;
+    background: #fdfaf7;
+  }
+  .discount-row button {
+    padding: 12px 20px;
     background: #c98a5e;
     color: white;
-    cursor: pointer;
-  }
-  .qty-controls span {
-    font-size: 22px;
-    font-weight: 600;
-    min-width: 30px;
-  }
-
-  .add-cart-btn {
-    margin-top: 25px;
-    padding: 12px 30px;
-    font-size: 18px;
-    font-weight: 600;
-    background: #4a3b32;
-    color: white;
     border: none;
-    border-radius: 30px;
+    border-radius: 14px;
+    font-weight: 600;
     cursor: pointer;
   }
-  .add-cart-btn:active {
-    transform: scale(0.97);
+  .discount-msg {
+    margin-top: 10px;
+    font-size: 14px;
+    font-weight: 600;
   }
+  .discount-msg.success { color: #2e7d32; }
+  .discount-msg.error { color: #c0392b; }
 
-  .cart-section {
-    margin-top: 70px;
-    max-width: 500px;
-    margin-left: auto;
-    margin-right: auto;
-    text-align: left;
-    background: white;
-    border-radius: 16px;
-    padding: 25px 30px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-  }
-  .cart-section h2 {
-    font-size: 24px;
-    color: #4a3b32;
-    margin-bottom: 15px;
-    text-align: center;
-  }
-  .cart-item {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 10px 0;
-    border-bottom: 1px solid #eee;
-    font-size: 17px;
-  }
-  .cart-item button {
-    background: none;
-    border: none;
-    color: #c0392b;
-    font-size: 16px;
-    cursor: pointer;
+  .summary-row {
+    display: flex; justify-content: space-between;
+    font-size: 16px; margin-top: 8px; color: #666;
   }
   .cart-total {
-    text-align: right;
-    font-size: 22px;
-    font-weight: 700;
-    margin-top: 15px;
-    color: #2f2f2f;
+    text-align: right; font-size: 24px; font-weight: 700;
+    margin-top: 18px; color: #2f2f2f;
   }
-  .empty-cart {
-    text-align: center;
-    color: #999;
-    font-size: 16px;
-    padding: 10px 0;
-  }
+
   .order-btn {
-    display: block;
-    width: 100%;
-    margin-top: 25px;
-    padding: 14px;
-    font-size: 18px;
-    font-weight: 700;
-    background: #2e7d32;
-    color: white;
-    border: none;
-    border-radius: 30px;
-    cursor: pointer;
-    text-align: center;
-    text-decoration: none;
+    display: block; width: 100%; margin-top: 22px; padding: 15px;
+    font-size: 18px; font-weight: 700;
+    background: linear-gradient(135deg, #2e7d32, #43a047);
+    color: white; border: none; border-radius: 30px;
+    text-align: center; text-decoration: none; cursor: pointer;
   }
-  .order-btn:active {
-    transform: scale(0.98);
-  }
-  .order-btn.disabled {
-    background: #ccc;
-    pointer-events: none;
+  .order-btn.disabled { background: #ccc; pointer-events: none; }
+
+  footer {
+    text-align: center; padding: 40px 20px; color: #a89686; font-size: 14px;
   }
 </style>
 </head>
 <body>
 
-<h1>Natural Skincare, Made With Care</h1>
-<p class="subtitle">Handcrafted soaps and face powders for every skin type</p>
-
-<div class="buttons">
-  <button class="item" id="soapBtn" onclick="toggleSoapList()">
-    <div class="soap"></div>
-    <p>Soap</p>
-  </button>
-  <button class="item" id="powderBtn" onclick="selectPowder()">
-    <div class="powder"></div>
-    <p>Sunni Pindi</p>
-  </button>
+<div class="hero">
+  <h1>Shree Tulasi</h1>
+  <p>Handcrafted natural soaps & Ayurvedic face powders — made with care, for every skin type.</p>
 </div>
 
-<!-- Soap variety list -->
-<div class="soap-list" id="soapList">
-  <h2>Choose Your Soap</h2>
-  <div id="soapRows"></div>
-</div>
+<div class="container">
 
-<!-- Powder order box -->
-<div class="order-box" id="orderBox">
-  <div id="unitPriceText">₹200 per 100g</div>
-  <div class="qty-controls">
-    <button onclick="changeQty(-1)">−</button>
-    <span id="qtyDisplay">1</span>
-    <button onclick="changeQty(1)">+</button>
+  <h2 class="section-title">Our Products</h2>
+  <div class="product-grid">
+    <div class="product-card" id="soapCard" onclick="toggleSoapList()">
+      <div class="soap-visual"></div>
+      <h3>Soaps</h3>
+      <div class="price-tag">From ₹100 · 6 varieties</div>
+    </div>
+    <div class="product-card" id="powderCard" onclick="selectPowder()">
+      <div class="powder-visual"></div>
+      <h3>Sunni Pindi</h3>
+      <div class="price-tag">₹200 per 100g</div>
+    </div>
   </div>
-  <br>
-  <button class="add-cart-btn" onclick="addPowderToCart()">Add to Cart</button>
+
+  <div class="soap-list" id="soapList">
+    <h2>Choose Your Soap</h2>
+    <div id="soapRows"></div>
+  </div>
+
+  <div class="order-box" id="orderBox">
+    <h3 style="color:#4a3b32;">Sunni Pindi</h3>
+    <div>₹200 per 100g</div>
+    <div class="qty-controls">
+      <button onclick="changeQty(-1)">−</button>
+      <span id="qtyDisplay">1</span>
+      <button onclick="changeQty(1)">+</button>
+    </div>
+    <br>
+    <button class="add-cart-btn" onclick="addPowderToCart()">Add to Cart</button>
+  </div>
+
+  <div class="cart-section">
+    <h2>Your Cart</h2>
+    <div id="cartItems"><div class="empty-cart">Your cart is empty</div></div>
+
+    <div class="discount-row">
+      <input type="text" id="discountInput" placeholder="Enter discount code">
+      <button onclick="applyDiscount()">Apply</button>
+    </div>
+    <div class="discount-msg" id="discountMsg"></div>
+
+    <div id="summaryArea"></div>
+    <div class="cart-total" id="cartTotal"></div>
+    <a href="#" class="order-btn disabled" id="orderLink" onclick="return placeOrder()">Order Now (Pay via UPI)</a>
+  </div>
+
 </div>
 
-<div class="cart-section">
-  <h2>Your Cart</h2>
-  <div id="cartItems">
-    <div class="empty-cart">Your cart is empty</div>
-  </div>
-  <div class="cart-total" id="cartTotal"></div>
-  <a href="#" class="order-btn disabled" id="orderLink" onclick="return placeOrder()">Order Now (Pay via UPI)</a>
-</div>
+<footer>Made with love · Shree Tulasi Natural Skincare</footer>
 
 <script>
 const soapVarieties = [
@@ -352,16 +326,18 @@ const soapPrice = 100;
 const powderPrice = 200;
 const upiId = "shreetulasi@oksbi";
 
+const discountCodes = {
+  "NEW100": { type: "flat", value: 100 }
+};
+
 let soapQty = {};
 soapVarieties.forEach(s => soapQty[s.id] = 1);
-
 let powderQty = 1;
 let cart = [];
+let appliedDiscount = null;
 
-// Build soap rows
 function buildSoapRows() {
-  const container = document.getElementById('soapRows');
-  container.innerHTML = soapVarieties.map(s => `
+  document.getElementById('soapRows').innerHTML = soapVarieties.map(s => `
     <div class="soap-row">
       <div class="soap-info">
         <div class="soap-logo" style="background:${s.color};">${s.emoji}</div>
@@ -385,7 +361,7 @@ function toggleSoapList() {
   const list = document.getElementById('soapList');
   const isOpen = list.style.display === 'block';
   list.style.display = isOpen ? 'none' : 'block';
-  document.getElementById('soapBtn').classList.toggle('selected', !isOpen);
+  document.getElementById('soapCard').classList.toggle('selected', !isOpen);
 }
 
 function changeSoapQty(id, delta) {
@@ -396,13 +372,9 @@ function changeSoapQty(id, delta) {
 function addSoapToCart(id) {
   const soap = soapVarieties.find(s => s.id === id);
   const qty = soapQty[id];
-
   const existing = cart.find(c => c.key === 'soap-' + id);
-  if (existing) {
-    existing.qty += qty;
-  } else {
-    cart.push({ key: 'soap-' + id, name: soap.name, unitPrice: soapPrice, qty: qty, unitLabel: "bar(s)" });
-  }
+  if (existing) existing.qty += qty;
+  else cart.push({ key: 'soap-' + id, name: soap.name, unitPrice: soapPrice, qty, unitLabel: "bar(s)" });
   renderCart();
 }
 
@@ -410,7 +382,7 @@ function selectPowder() {
   const box = document.getElementById('orderBox');
   const isOpen = box.style.display === 'block';
   box.style.display = isOpen ? 'none' : 'block';
-  document.getElementById('powderBtn').classList.toggle('selected', !isOpen);
+  document.getElementById('powderCard').classList.toggle('selected', !isOpen);
 }
 
 function changeQty(delta) {
@@ -420,11 +392,8 @@ function changeQty(delta) {
 
 function addPowderToCart() {
   const existing = cart.find(c => c.key === 'powder');
-  if (existing) {
-    existing.qty += powderQty;
-  } else {
-    cart.push({ key: 'powder', name: "Sunni Pindi", unitPrice: powderPrice, qty: powderQty, unitLabel: "x 100g" });
-  }
+  if (existing) existing.qty += powderQty;
+  else cart.push({ key: 'powder', name: "Sunni Pindi", unitPrice: powderPrice, qty: powderQty, unitLabel: "x 100g" });
   renderCart();
 }
 
@@ -433,24 +402,44 @@ function removeFromCart(key) {
   renderCart();
 }
 
+function applyDiscount() {
+  const codeInput = document.getElementById('discountInput').value.trim().toUpperCase();
+  const msg = document.getElementById('discountMsg');
+  const code = discountCodes[codeInput];
+
+  if (!code) {
+    appliedDiscount = null;
+    msg.textContent = "Invalid discount code";
+    msg.className = "discount-msg error";
+    renderCart();
+    return;
+  }
+
+  appliedDiscount = { code: codeInput, ...code };
+  msg.textContent = `Code "${codeInput}" applied — ₹${code.value} off!`;
+  msg.className = "discount-msg success";
+  renderCart();
+}
+
 function renderCart() {
   const cartItemsDiv = document.getElementById('cartItems');
   const cartTotalDiv = document.getElementById('cartTotal');
+  const summaryArea = document.getElementById('summaryArea');
   const orderLink = document.getElementById('orderLink');
 
   if (cart.length === 0) {
     cartItemsDiv.innerHTML = '<div class="empty-cart">Your cart is empty</div>';
     cartTotalDiv.innerText = '';
+    summaryArea.innerHTML = '';
     orderLink.classList.add('disabled');
     return;
   }
 
   let html = '';
-  let grandTotal = 0;
-
+  let subtotal = 0;
   cart.forEach(c => {
     const lineTotal = c.unitPrice * c.qty;
-    grandTotal += lineTotal;
+    subtotal += lineTotal;
     html += `
       <div class="cart-item">
         <span>${c.name} — ${c.qty} ${c.unitLabel}</span>
@@ -458,8 +447,20 @@ function renderCart() {
       </div>
     `;
   });
-
   cartItemsDiv.innerHTML = html;
+
+  let discountAmount = 0;
+  if (appliedDiscount) {
+    discountAmount = Math.min(appliedDiscount.value, subtotal);
+  }
+  const grandTotal = subtotal - discountAmount;
+
+  let summaryHtml = `<div class="summary-row"><span>Subtotal</span><span>₹${subtotal}</span></div>`;
+  if (appliedDiscount) {
+    summaryHtml += `<div class="summary-row"><span>Discount (${appliedDiscount.code})</span><span>−₹${discountAmount}</span></div>`;
+  }
+  summaryArea.innerHTML = summaryHtml;
+
   cartTotalDiv.innerText = "Total: ₹" + grandTotal;
   orderLink.classList.remove('disabled');
 }
@@ -467,7 +468,10 @@ function renderCart() {
 function placeOrder() {
   if (cart.length === 0) return false;
 
-  const grandTotal = cart.reduce((sum, c) => sum + c.unitPrice * c.qty, 0);
+  const subtotal = cart.reduce((sum, c) => sum + c.unitPrice * c.qty, 0);
+  const discountAmount = appliedDiscount ? Math.min(appliedDiscount.value, subtotal) : 0;
+  const grandTotal = subtotal - discountAmount;
+
   const note = cart.map(c => `${c.name} x${c.qty}`).join(', ');
   const upiUrl = `upi://pay?pa=${upiId}&pn=Shree%20Tulasi&am=${grandTotal}&cu=INR&tn=${encodeURIComponent(note)}`;
 
