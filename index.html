@@ -2,7 +2,7 @@
 <html>
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Shree Tulasi — Natural Skincare</title>
+<title>vedic_bloom_essentials — Natural Skincare</title>
 <style>
   * { box-sizing: border-box; }
   body {
@@ -48,7 +48,6 @@
     font-weight: 600;
   }
 
-  /* Each product gets its own column: card + its own dropdown beneath it */
   .product-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -110,7 +109,6 @@
   .product-card h3 { font-size: 20px; color: #4a3b32; margin: 0 0 6px; }
   .product-card .price-tag { font-size: 15px; color: #8a7a70; }
 
-  /* Dropdown panels — now nested under their own card */
   .dropdown-panel {
     max-height: 0;
     overflow: hidden;
@@ -188,7 +186,6 @@
     border-radius: 30px; cursor: pointer;
   }
 
-  /* Cart */
   .cart-section {
     background: white;
     border-radius: 22px;
@@ -203,46 +200,30 @@
   .cart-item button { background: none; border: none; color: #c0392b; font-size: 15px; cursor: pointer; }
   .empty-cart { text-align: center; color: #aaa; font-size: 16px; padding: 20px 0; }
 
-  .discount-row { display: flex; gap: 10px; margin-top: 20px; flex-wrap: wrap; }
-  .discount-row input {
-    flex: 1 1 160px;
-    padding: 12px 16px;
-    border: 1px solid #e0d5cb;
-    border-radius: 14px;
-    font-size: 15px;
-    background: #fdfaf7;
-  }
-  .discount-row button {
-    padding: 12px 20px;
-    background: #c98a5e;
-    color: white;
-    border: none;
-    border-radius: 14px;
-    font-weight: 600;
-    cursor: pointer;
-  }
-  .discount-msg { margin-top: 10px; font-size: 14px; font-weight: 600; }
-  .discount-msg.success { color: #2e7d32; }
-  .discount-msg.error { color: #c0392b; }
-
-  .summary-row {
-    display: flex; justify-content: space-between;
-    font-size: 16px; margin-top: 8px; color: #666;
-  }
   .cart-total {
     text-align: right; font-size: 24px; font-weight: 700;
     margin-top: 18px; color: #2f2f2f;
   }
 
-  .order-btn {
-    display: block; width: 100%; margin-top: 22px; padding: 15px;
-    font-size: 18px; font-weight: 700;
-    background: linear-gradient(135deg, #2e7d32, #43a047);
-    color: white; border: none; border-radius: 30px;
-    text-align: center; text-decoration: none; cursor: pointer;
-    transition: opacity 0.2s ease;
+  .order-cta {
+    margin-top: 25px;
+    text-align: center;
+    padding: 20px;
+    background: #fdf6f0;
+    border-radius: 18px;
   }
-  .order-btn.disabled { background: #ccc; pointer-events: none; }
+  .order-cta p {
+    margin: 0 0 8px;
+    font-size: 16px;
+    color: #6b5b4f;
+  }
+  .order-cta a {
+    display: inline-block;
+    font-size: 22px;
+    font-weight: 700;
+    color: #2e7d32;
+    text-decoration: none;
+  }
 
   footer { text-align: center; padding: 40px 20px; color: #a89686; font-size: 14px; }
 </style>
@@ -294,16 +275,12 @@
   <div class="cart-section">
     <h2>Your Cart</h2>
     <div id="cartItems"><div class="empty-cart">Your cart is empty</div></div>
-
-    <div class="discount-row">
-      <input type="text" id="discountInput" placeholder="Enter discount code">
-      <button onclick="applyDiscount()">Apply</button>
-    </div>
-    <div class="discount-msg" id="discountMsg"></div>
-
-    <div id="summaryArea"></div>
     <div class="cart-total" id="cartTotal"></div>
-    <a href="#" class="order-btn disabled" id="orderLink" onclick="return placeOrder()">Order Now (Pay via UPI)</a>
+
+    <div class="order-cta">
+      <p>To order, text us at</p>
+      <a href="tel:8074394488">8074394488</a>
+    </div>
   </div>
 
 </div>
@@ -311,10 +288,8 @@
 <footer>Made with love · Shree Tulasi Natural Skincare</footer>
 
 <script>
-  // ---------- Product data ----------
   const SOAP_PRICE = 100;
   const POWDER_PRICE = 200;
-  const UPI_ID = "shreetulasi@oksbi";
 
   const soapVarieties = [
     { id: "papaya",       name: "Papaya Moisturizer Soap",          color: "#ffb26b", emoji: "🍈" },
@@ -325,19 +300,12 @@
     { id: "antidarkspot", name: "Anti Dark Spots Moisturizer Soap", color: "#a97155", emoji: "✨" }
   ];
 
-  const discountCodes = {
-    "NEW100": { type: "flat", value: 100 }
-  };
-
-  // ---------- State ----------
   const state = {
     soapQty: Object.fromEntries(soapVarieties.map(s => [s.id, 1])),
     powderQty: 1,
-    cart: [],
-    discount: null
+    cart: []
   };
 
-  // ---------- Init ----------
   function init() {
     renderSoapRows();
     renderCart();
@@ -364,7 +332,6 @@
     document.getElementById('soapRows').innerHTML = html;
   }
 
-  // ---------- Panel toggling (each opens under its own card) ----------
   function togglePanel(type) {
     const panelId = type === 'soap' ? 'soapPanel' : 'powderPanel';
     const cardId = type === 'soap' ? 'soapCard' : 'powderCard';
@@ -376,7 +343,6 @@
     card.classList.toggle('selected', !isOpen);
   }
 
-  // ---------- Soap quantity + cart ----------
   function changeSoapQty(id, delta) {
     state.soapQty[id] = Math.max(1, state.soapQty[id] + delta);
     document.getElementById('qty-' + id).innerText = state.soapQty[id];
@@ -392,7 +358,6 @@
     renderCart();
   }
 
-  // ---------- Powder quantity + cart ----------
   function changePowderQty(delta) {
     state.powderQty = Math.max(1, state.powderQty + delta);
     document.getElementById('qtyDisplay').innerText = state.powderQty;
@@ -411,45 +376,20 @@
     renderCart();
   }
 
-  // ---------- Discount ----------
-  function applyDiscount() {
-    const codeInput = document.getElementById('discountInput').value.trim().toUpperCase();
-    const msg = document.getElementById('discountMsg');
-    const code = discountCodes[codeInput];
-
-    if (!code) {
-      state.discount = null;
-      msg.textContent = "Invalid discount code";
-      msg.className = "discount-msg error";
-      renderCart();
-      return;
-    }
-
-    state.discount = { code: codeInput, ...code };
-    msg.textContent = `Code "${codeInput}" applied — ₹${code.value} off!`;
-    msg.className = "discount-msg success";
-    renderCart();
-  }
-
-  // ---------- Cart rendering ----------
   function renderCart() {
     const cartItemsDiv = document.getElementById('cartItems');
     const cartTotalDiv = document.getElementById('cartTotal');
-    const summaryArea = document.getElementById('summaryArea');
-    const orderLink = document.getElementById('orderLink');
 
     if (state.cart.length === 0) {
       cartItemsDiv.innerHTML = '<div class="empty-cart">Your cart is empty</div>';
       cartTotalDiv.innerText = '';
-      summaryArea.innerHTML = '';
-      orderLink.classList.add('disabled');
       return;
     }
 
-    let subtotal = 0;
+    let total = 0;
     cartItemsDiv.innerHTML = state.cart.map(c => {
       const lineTotal = c.unitPrice * c.qty;
-      subtotal += lineTotal;
+      total += lineTotal;
       return `
         <div class="cart-item">
           <span>${c.name} — ${c.qty} ${c.unitLabel}</span>
@@ -458,32 +398,7 @@
       `;
     }).join('');
 
-    const discountAmount = state.discount ? Math.min(state.discount.value, subtotal) : 0;
-    const grandTotal = subtotal - discountAmount;
-
-    let summaryHtml = `<div class="summary-row"><span>Subtotal</span><span>₹${subtotal}</span></div>`;
-    if (state.discount) {
-      summaryHtml += `<div class="summary-row"><span>Discount (${state.discount.code})</span><span>−₹${discountAmount}</span></div>`;
-    }
-    summaryArea.innerHTML = summaryHtml;
-
-    cartTotalDiv.innerText = "Total: ₹" + grandTotal;
-    orderLink.classList.remove('disabled');
-  }
-
-  // ---------- Place order ----------
-  function placeOrder() {
-    if (state.cart.length === 0) return false;
-
-    const subtotal = state.cart.reduce((sum, c) => sum + c.unitPrice * c.qty, 0);
-    const discountAmount = state.discount ? Math.min(state.discount.value, subtotal) : 0;
-    const grandTotal = subtotal - discountAmount;
-
-    const note = state.cart.map(c => `${c.name} x${c.qty}`).join(', ');
-    const upiUrl = `upi://pay?pa=${UPI_ID}&pn=Shree%20Tulasi&am=${grandTotal}&cu=INR&tn=${encodeURIComponent(note)}`;
-
-    window.location.href = upiUrl;
-    return false;
+    cartTotalDiv.innerText = "Total: ₹" + total;
   }
 
   init();
